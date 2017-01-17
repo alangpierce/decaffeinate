@@ -133,7 +133,7 @@ describe('member access', () => {
           
          .then
     `, `
-      Q(() => P(() => foo).then
+      Q(() => P(() => foo)   .then
        );
     `);
   });
@@ -145,7 +145,8 @@ describe('member access', () => {
         .d
     `, `
       a(b(
-        c)).d;
+        c)
+      )  .d;
     `);
   });
 
@@ -158,7 +159,22 @@ describe('member access', () => {
     `, `
       a
         .b(c(d,
-          e)).f;
+          e)
+      )  .f;
+    `);
+  });
+
+  it('handles a complex implicit call wrapping a multiline function call with inline comment and followed by a dot', () => {
+    check(`
+      a
+        .b c(d,
+          e) #giri
+        .f
+    `, `
+      a
+        .b(c(d,
+          e) //giri
+      )  .f;
     `);
   });
 });

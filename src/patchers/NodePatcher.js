@@ -802,6 +802,26 @@ export default class NodePatcher {
 
 
   /**
+   * Gets the last index of the token between source locations that matches a
+   * predicate function.
+   */
+  indexOfLastSourceTokenBetweenSourceIndicesMatching(right: number, left: number, predicate: (token: SourceToken) => boolean): ?SourceTokenListIndex {
+    let tokenList = this.getProgramSourceTokens();
+    return tokenList.lastIndexOfTokenMatchingPredicate(
+      token => {
+        return (
+          token.start >= left &&
+          token.start <= right &&
+          predicate(token)
+        );
+      },
+      tokenList.indexOfTokenNearSourceIndex(right),
+      tokenList.indexOfTokenNearSourceIndex(left).previous()
+    );
+  }
+
+
+  /**
    * Gets the token at a particular index.
    */
   sourceTokenAtIndex(index: SourceTokenListIndex): ?SourceToken {

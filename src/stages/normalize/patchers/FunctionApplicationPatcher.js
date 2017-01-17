@@ -89,7 +89,11 @@ export default class FunctionApplicationPatcher extends NodePatcher {
       // this case by moving the `.` to be right after the new `)`.
       let nextSemanticToken = this.getFirstSemanticToken(this.contentEnd);
       if (nextSemanticToken && nextSemanticToken.type === SourceType.DOT) {
-        this.overwrite(this.outerEnd, nextSemanticToken.start, ')');
+        let lfPosTok = this.indexOfLastSourceTokenBetweenSourceIndicesMatching(nextSemanticToken.start, this.contentEnd,
+          t => t.type === SourceType.NEWLINE
+        );
+        let lfPos = this.sourceTokenAtIndex(lfPosTok);
+        this.insert(lfPos.end, ')');
       } else {
         this.insert(this.contentEnd, `\n${this.getIndent()})`);
       }
